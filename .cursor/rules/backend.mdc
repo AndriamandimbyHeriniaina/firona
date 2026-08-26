@@ -1,0 +1,14 @@
+---
+description: Django backend conventions for Firona.
+globs: backend/**
+alwaysApply: false
+---
+
+# Backend
+
+Read `docs/backend.md`. Use skill `firona-backend`.
+
+- Apps: `catalog`, `sources`, `trends`. Do not dump new domain into `config/`.
+- HTTP via nginx only (`/api`, `/admin`). Keep `USE_X_FORWARDED_*` settings.
+- Collectors go in Celery, not in views.
+- `Source.consent_granted` must be true before any Facebook-kind job.

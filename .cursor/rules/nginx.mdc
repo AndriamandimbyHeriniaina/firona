@@ -1,0 +1,14 @@
+---
+description: Nginx gateway routing for Firona.
+globs: nginx/**
+alwaysApply: false
+---
+
+# Nginx
+
+Read `docs/nginx.md`. Use skill `firona-nginx`.
+
+- Only public HTTP entry. Keep `/api` `/admin` `/static` on Django and `/` on the UI.
+- Static `upstream` hosts (`backend`, `frontend`). Do not use `resolver 127.0.0.11`.
+- Preserve `Host` and `X-Forwarded-*`.
+- Prod: same locations; swap `/` to Vue `dist` + TLS. Do not publish backend/frontend ports.

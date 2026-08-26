@@ -1,14 +1,14 @@
 ---
-description: Always load Firona README and living DOC before working; update them after shipping.
+description: Load Firona docs index and version; language and legal-source defaults.
 alwaysApply: true
 ---
 
-# Firona project docs
+# Firona (always)
 
-Before any task in this repo, read `README.md` and `DOC.md`.
+Before work, read `README.md`, `docs/INDEX.md`, and `docs/versions.md`. Then read **only** the function doc for the files you touch (see INDEX).
 
-- Follow the **Current version** in `DOC.md`. Do not skip ahead unless the user asks.
-- After you ship something, update `DOC.md` (status, decisions, follow-ups, date). If setup or commands changed, update `README.md` too.
-- No Facebook scraping. Sources must match `DOC.md`.
-- User-facing copy: French. Code comments / README / DOC: English.
-- Answers to the user: French.
+- Stay on **Current version** in `docs/versions.md` unless the user starts the next one.
+- After shipping: update that function doc + `docs/versions.md` (+ `README.md` if setup changed).
+- No Facebook scraping. Sources: `docs/product.md`.
+- UI: French. Comments / docs: English. Replies: French.
+- Use the **dedicated skill** for the service (nginx, backend, frontend, workers, data, compose).

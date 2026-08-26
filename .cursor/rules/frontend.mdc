@@ -1,0 +1,14 @@
+---
+description: Vue PWA conventions for Firona.
+globs: frontend/**
+alwaysApply: false
+---
+
+# Frontend
+
+Read `docs/frontend.md`. Use skill `firona-frontend`.
+
+- Call the API with relative paths (`/api/...`). Never hardcode `:8000` or `:5173`.
+- Do not add a Vite proxy to Django; nginx is the gateway.
+- Behind Compose, HMR must use `HMR_CLIENT_PORT` (public nginx port).
+- UI strings in French.

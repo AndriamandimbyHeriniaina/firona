@@ -1,0 +1,13 @@
+---
+description: Celery worker and beat for Firona.
+globs: backend/config/celery.py,backend/**/tasks.py
+alwaysApply: false
+---
+
+# Workers
+
+Read `docs/workers.md`. Use skill `firona-workers`.
+
+- `celery -A config` for worker and beat. Broker is Redis.
+- No Facebook scraping in tasks. Honour `Source.is_active` and `consent_granted`.
+- v1: heartbeat only; schedules land in v3.

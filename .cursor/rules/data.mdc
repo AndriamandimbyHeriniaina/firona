@@ -1,0 +1,12 @@
+---
+description: PostgreSQL and Redis for Firona.
+globs: .env,.env.example,backend/config/settings.py
+alwaysApply: false
+---
+
+# Data
+
+Read `docs/data.md`. Use skill `firona-data`.
+
+- Django → `POSTGRES_*`. Celery → `REDIS_URL`.
+- Never commit `.env`. Keep `postgres_data` as the DB volume.

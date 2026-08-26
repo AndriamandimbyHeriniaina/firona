@@ -15,6 +15,19 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default="insecure-dev-key")
 DEBUG = env.bool("DJANGO_DEBUG", default=False)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
+# Trust the nginx gateway (TLS will set X-Forwarded-Proto=https in production).
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=[
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+        "http://localhost",
+        "http://127.0.0.1",
+    ],
+)
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -87,9 +100,17 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Same-origin through nginx in Docker; keep CORS for local `npm run dev`.
 CORS_ALLOWED_ORIGINS = env.list(
     "CORS_ALLOWED_ORIGINS",
-    default=["http://localhost:5173", "http://127.0.0.1:5173"],
+    default=[
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+        "http://localhost",
+        "http://127.0.0.1",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
 )
 
 REST_FRAMEWORK = {

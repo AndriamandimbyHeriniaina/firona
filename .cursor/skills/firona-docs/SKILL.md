@@ -1,40 +1,25 @@
 ---
 name: firona-docs
 description: >-
-  Loads Firona project context from README.md and DOC.md, then keeps those
-  files in sync after work ships. Use at the start of every task in this
-  repository: coding, architecture, Docker, Django, Vue, PWA, radar, trends,
-  collectors, sources, Celery, or documentation. Use whenever the user mentions
-  Firona, versions (v1, v2, …), README, or DOC.md.
+  Navigates Firona documentation split by function and keeps versions in sync.
+  Use at the start of every Firona task, when the user mentions README, docs,
+  INDEX, versions, v1–v8, or documentation structure.
 ---
 
-# Firona docs (always)
+# Firona docs
 
-## Before any work
+## Before work
 
-Read both files with the Read tool (full files, not grep snippets):
+Read (full files):
 
-1. `README.md` — how to run the stack
-2. `DOC.md` — current version, decisions, roadmap
+1. `README.md`
+2. `docs/INDEX.md`
+3. `docs/versions.md`
+4. `docs/product.md` if the task is product/legal/scope
+5. The **function** doc named in INDEX for the files you will edit
 
-Do this even if the user did not mention docs. If a file is missing, stop and say so.
-
-## While working
-
-- Stay inside the **Current version** in `DOC.md` unless the user explicitly starts the next version.
-- Do not implement a later version “while we are here”.
-- Do not add Facebook/Marketplace scraping. Allowed sources are only those listed in `DOC.md`.
-- UI strings: French. Code comments and docstrings: English (with a short example).
-- Reply to the user in French.
+Then follow the matching **service skill** (`firona-nginx`, `firona-backend`, `firona-frontend`, `firona-workers`, `firona-data`, `firona-compose`). Do not put nginx rules in the backend skill.
 
 ## After shipping
 
-In the **same change** as the code:
-
-1. Update `DOC.md`: status, in/out of scope, **Decisions**, **Follow-ups**, **Last updated**, **Current version** if a version completed or started.
-2. Update `README.md` if ports, commands, services, or setup changed.
-3. Never rewrite past versions; mark them done and append.
-
-## Version bumps
-
-Only move **Current version** when the user agrees the slice is done or that the next version starts. Planned sections in `DOC.md` stay thin until then.
+Update the function doc + `docs/versions.md` + `docs/INDEX.md` dates. Update `README.md` if commands or ports changed. Never rewrite past versions.

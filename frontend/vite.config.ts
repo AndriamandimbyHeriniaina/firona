@@ -2,7 +2,9 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 
-const apiProxyTarget = process.env.API_PROXY_TARGET || "http://localhost:8000";
+const hmrClientPort = process.env.HMR_CLIENT_PORT
+  ? Number(process.env.HMR_CLIENT_PORT)
+  : undefined;
 
 export default defineConfig({
   plugins: [
@@ -33,11 +35,9 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-    proxy: {
-      "/api": {
-        target: apiProxyTarget,
-        changeOrigin: true,
-      },
-    },
+    allowedHosts: true,
+    // When served behind nginx:80, the browser must open the HMR websocket
+    // on that public port, not on the internal Vite port 5173.
+    hmr: hmrClientPort ? { clientPort: hmrClientPort } : true,
   },
 });

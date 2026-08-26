@@ -1,5 +1,6 @@
 # Firona local stack: each process is an isolated Compose service.
-# Frontend talks to Django through the Vite /api proxy (same origin in the browser).
+# The browser only talks to nginx. Host port is NGINX_HOST_PORT (default 8080);
+# inside the container nginx still listens on 80.
 
 services:
   db:
@@ -41,8 +42,8 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       db:
         condition: service_healthy
@@ -99,16 +100,35 @@ services:
       target: dev
     restart: unless-stopped
     environment:
-      API_PROXY_TARGET: http://backend:8000
+      HMR_CLIENT_PORT: ${NGINX_HOST_PORT:-8080}
     command: npm run dev -- --host 0.0.0.0 --port 5173
     volumes:
       - ./frontend:/app
       - frontend_node_modules:/app/node_modules
-    ports:
-      - "5173:5173"
+    expose:
+      - "5173"
     depends_on:
       backend:
         condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${NGINX_HOST_PORT:-8080}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/api/health/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
 
 volumes:
   postgres_data:

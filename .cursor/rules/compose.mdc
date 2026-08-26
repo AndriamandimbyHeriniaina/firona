@@ -1,0 +1,13 @@
+---
+description: Docker Compose orchestration for Firona.
+globs: docker-compose.yml
+alwaysApply: false
+---
+
+# Compose
+
+Read `docs/compose.md`. Use skill `firona-compose`.
+
+- One process per service in the single compose file.
+- Publish `${NGINX_HOST_PORT}:80` (default 8080). Backend and frontend stay internal.
+- Do not fold nginx, Vite, or Django into one container.
