@@ -15,10 +15,10 @@ Read (full files):
 1. `README.md`
 2. `docs/INDEX.md`
 3. `docs/versions.md`
-4. `docs/product.md` if the task is product/legal/scope
+4. `docs/product.md` / `docs/sources.md` if the task is product/legal/scope
 5. The **function** doc named in INDEX for the files you will edit
 
-Then follow the matching **service skill** (`firona-nginx`, `firona-backend`, `firona-frontend`, `firona-workers`, `firona-data`, `firona-compose`). Do not put nginx rules in the backend skill.
+Then follow the matching **service skill** (`firona-nginx`, `firona-backend`, `firona-frontend`, `firona-workers`, `firona-data`, `firona-compose`, `firona-sources`). Do not put nginx rules in the backend skill.
 
 ## After shipping
 

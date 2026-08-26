@@ -13,7 +13,7 @@ Read `docs/workers.md` before editing Celery.
 ## Do
 
 - App: `celery -A config`. Broker: `REDIS_URL`.
-- v1: `ping_stack` only. Collectors start in v3 on **legal** sources.
+- v2: `ping_stack` + `audit_sources` (no HTTP). v3 collectors must `assert_can_collect`.
 
 ## Do not
 

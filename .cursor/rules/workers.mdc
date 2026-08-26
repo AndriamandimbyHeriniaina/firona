@@ -9,5 +9,5 @@ alwaysApply: false
 Read `docs/workers.md`. Use skill `firona-workers`.
 
 - `celery -A config` for worker and beat. Broker is Redis.
-- No Facebook scraping in tasks. Honour `Source.is_active` and `consent_granted`.
-- v1: heartbeat only; schedules land in v3.
+- No Facebook scraping. `assert_can_collect` before HTTP (`docs/sources.md`).
+- v2: `audit_sources` only; HTTP collectors in v3.

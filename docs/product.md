@@ -6,7 +6,7 @@ It is not a map of physical markets. Radar.com Places is not the catalogue.
 
 ## Signals (legal only)
 
-Partner Facebook pages/groups (consent), Meta Ads Library, Google Trends `geo=MG`, later marketplace **search logs**. Scraping Facebook / Instagram / WhatsApp / private groups is forbidden. Meta Content Library is a research cleanroom, not an app backend.
+See [sources.md](sources.md). Short version: Ads Library + Trends `MG` are the only collectable kinds for v3. Facebook pages/groups need consent and are **not fetched yet**. Scraping is forbidden.
 
 ## Non-goals (until versions.md says otherwise)
 

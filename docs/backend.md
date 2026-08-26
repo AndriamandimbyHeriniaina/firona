@@ -7,7 +7,7 @@ Project: `backend/` (`config/` + apps). DRF. Timezone `Indian/Antananarivo`.
 | App | Models | Role |
 | --- | --- | --- |
 | `catalog` | `Category`, `Product` | Articles, aliases, images, where-to-find, linked `Source`s |
-| `sources` | `Source` | Legal sources only; `consent_granted` required for FB |
+| `sources` | `Source` | Legal gate (`can_collect`); Ads/Trends collectable, FB stored only |
 | `trends` | `TrendSnapshot` | Scores for now / past / future |
 
 ## HTTP
@@ -28,4 +28,4 @@ docker compose exec backend python manage.py seed_demo --force
 
 First backend start: migrate + seed if `SEED_DEMO=1`.
 
-Collectors belong in Celery (see [workers.md](workers.md)), not in request/response.
+Collectors belong in Celery (see [workers.md](workers.md)), not in request/response. They must call `assert_can_collect` ([sources.md](sources.md)) before HTTP (v3).

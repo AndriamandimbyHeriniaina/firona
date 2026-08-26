@@ -4,7 +4,7 @@ Source of truth for **what shipped** and **what is next**. Do not delete past ve
 
 | Field | Value |
 | --- | --- |
-| Current version | **v1 — Initialization** |
+| Current version | **v2 — Legal source strategy** |
 | Last updated | 2026-08-26 |
 
 ## How to update
@@ -22,7 +22,7 @@ Stay on the current version unless the user starts the next one.
 | Version | Theme | Status |
 | --- | --- | --- |
 | **v1** | Init: Docker, Django, Vue PWA, nginx gateway, demo radar | **Done** |
-| **v2** | Legal source strategy (no scraping) | Planned |
+| **v2** | Legal source strategy (no scraping) | **Done** |
 | **v3** | Collectors (Ads Library + Google Trends MG) on Celery | Planned |
 | **v4** | Robustness: retries, idempotency, rate limits, observability | Planned |
 | **v5** | Demand vs supply NLP (Malagasy / French) | Planned |
@@ -67,12 +67,33 @@ Stay on the current version unless the user starts the next one.
 
 ## v2 — Legal source strategy
 
-**Status:** Planned  
+**Status:** Done  
 **Goal:** Enforceable source matrix so collectors cannot scrape Facebook.
 
-In scope: Ads Library, Trends `MG`, opt-in Pages, admin-consented groups; `Source` as the only collector switch; no PII/Messenger/private groups.
+### Shipped
 
-Out of scope: HTTP collectors (v3), NLP (v5).
+- Policy doc: `docs/sources.md`
+- `Source` gate: `can_collect` / `block_reason` / `revoke_consent` / last success-error
+- Collectable kinds for the next slice: `meta_ads`, `google_trends` only
+- Facebook pages/groups and marketplace partners: stored, **not** fetched until a later version
+- Celery `audit_sources` (no outbound HTTP)
+- Django tests on the gate
+
+### Out of scope (on purpose)
+
+- HTTP collectors (v3)
+- NLP (v5)
+
+### Decisions
+
+- One function `assert_can_collect` before any future HTTP
+- Revoking consent stops collects but **keeps** historical snapshots
+- “Everywhere” is not a source kind
+
+### Follow-ups for v3
+
+- Celery beat: Ads Library + Google Trends `MG` behind the gate
+- `mark_success` / `mark_error` from those jobs
 
 ---
 

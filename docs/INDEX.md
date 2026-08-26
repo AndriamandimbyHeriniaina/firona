@@ -4,8 +4,8 @@ Read this file first, then **only** the docs for the area you are changing.
 
 | Field | Value |
 | --- | --- |
-| Current version | **v1 — Initialization** |
-| Status | Scaffold + nginx gateway + article detail. Collectors not implemented. |
+| Current version | **v2 — Legal source strategy** |
+| Status | Source matrix + collect gate. HTTP collectors are v3. |
 | Last updated | 2026-08-26 |
 
 ## Docs by function
@@ -13,6 +13,7 @@ Read this file first, then **only** the docs for the area you are changing.
 | Function | Doc | Skill | Rule (when files match) |
 | --- | --- | --- | --- |
 | Product / non-goals | [product.md](product.md) | `firona-docs` | always (index only) |
+| Legal sources | [sources.md](sources.md) | `firona-sources` | `sources.mdc` |
 | Versions / roadmap | [versions.md](versions.md) | `firona-docs` | always (index only) |
 | Compose orchestration | [compose.md](compose.md) | `firona-compose` | `compose.mdc` |
 | Nginx gateway | [nginx.md](nginx.md) | `firona-nginx` | `nginx.mdc` |

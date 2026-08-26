@@ -12,10 +12,20 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class SourceBriefSerializer(serializers.ModelSerializer):
     kind_label = serializers.CharField(source="get_kind_display", read_only=True)
+    collectable = serializers.BooleanField(source="can_collect", read_only=True)
+    block_reason = serializers.CharField(read_only=True, allow_null=True)
 
     class Meta:
         model = Source
-        fields = ("id", "name", "kind", "kind_label", "consent_granted")
+        fields = (
+            "id",
+            "name",
+            "kind",
+            "kind_label",
+            "consent_granted",
+            "collectable",
+            "block_reason",
+        )
 
 
 class ProductSerializer(serializers.ModelSerializer):

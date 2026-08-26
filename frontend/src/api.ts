@@ -26,6 +26,8 @@ export interface SourceBrief {
   kind: string;
   kind_label: string;
   consent_granted: boolean;
+  collectable: boolean;
+  block_reason: string | null;
 }
 
 export interface ProductDetail extends Product {

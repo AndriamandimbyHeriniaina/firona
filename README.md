@@ -4,9 +4,9 @@ Mobile-first web app that shows which **articles** are in demand on the Malagasy
 
 The product is a **demand radar**, not a map of physical markets. Signals will come from **legal, consented sources** (partner Facebook pages/groups, Meta Ads Library, Google Trends `MG`, later marketplace search logs). Scraping Facebook is out of scope.
 
-Living docs (split by function): [docs/INDEX.md](docs/INDEX.md). Roadmap: [docs/versions.md](docs/versions.md).
+Living docs (split by function): [docs/INDEX.md](docs/INDEX.md). Sources policy: [docs/sources.md](docs/sources.md). Roadmap: [docs/versions.md](docs/versions.md).
 
-## Stack (v1)
+## Stack (v2)
 
 | Layer | Choice |
 | --- | --- |

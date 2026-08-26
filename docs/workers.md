@@ -9,6 +9,6 @@ celery -A config beat -l info
 
 Broker / results: `REDIS_URL` (see [data.md](data.md)).
 
-v1: `ping_stack` heartbeat only. `CELERY_BEAT_SCHEDULE` is empty until v3 collectors.
+v2: `ping_stack` + `audit_sources` (classifies sources, **no HTTP**). `CELERY_BEAT_SCHEDULE` stays empty until v3 collectors.
 
-Do not scrape Facebook from tasks. A task may run only if the `Source` is `is_active` and `consent_granted` (when the kind requires consent).
+Every collector must call `assert_can_collect(source)` first. See [sources.md](sources.md). Revoked consent stops new fetches; snapshots stay.

@@ -9,6 +9,6 @@ Before work, read `README.md`, `docs/INDEX.md`, and `docs/versions.md`. Then rea
 
 - Stay on **Current version** in `docs/versions.md` unless the user starts the next one.
 - After shipping: update that function doc + `docs/versions.md` (+ `README.md` if setup changed).
-- No Facebook scraping. Sources: `docs/product.md`.
+- No Facebook scraping. Sources: `docs/sources.md`.
 - UI: French. Comments / docs: English. Replies: French.
-- Use the **dedicated skill** for the service (nginx, backend, frontend, workers, data, compose).
+- Use the **dedicated skill** for the service (nginx, backend, frontend, workers, data, compose, sources).

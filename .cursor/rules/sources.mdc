@@ -1,0 +1,13 @@
+---
+description: Legal source gate for Firona collectors.
+globs: backend/apps/sources/**
+alwaysApply: false
+---
+
+# Sources
+
+Read `docs/sources.md`. Use skill `firona-sources`.
+
+- No scraping. `assert_can_collect` before HTTP.
+- Collectable kinds: `meta_ads`, `google_trends`.
+- Revoke consent without deleting historical snapshots.

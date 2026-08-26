@@ -43,11 +43,12 @@
           <li v-for="source in detail.product.sources" :key="source.id">
             <strong>{{ source.name }}</strong>
             <span>{{ source.kind_label }}</span>
-            <em v-if="source.consent_granted">consentie</em>
+            <em v-if="source.collectable">collecte autorisée (v3)</em>
+            <em v-else>{{ source.block_reason || "non collectée" }}</em>
           </li>
           <li v-if="!detail.product.sources.length">Aucune source liée pour l’instant.</li>
         </ul>
-        <p class="hint">v1 : données de démonstration. Les collecteurs légaux arrivent en v3.</p>
+        <p class="hint">Les scores affichés sont encore du démo. La collecte HTTP commence en v3, uniquement sur les sources « collectable ».</p>
       </section>
 
       <section class="block">
