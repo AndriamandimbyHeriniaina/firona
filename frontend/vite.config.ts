@@ -11,7 +11,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg"],
+      includeAssets: ["favicon.svg", "articles/*.svg"],
       manifest: {
         name: "Firona",
         short_name: "Firona",

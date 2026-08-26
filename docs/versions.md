@@ -44,6 +44,7 @@ Stay on the current version unless the user starts the next one.
 - Nginx only public HTTP (host port `NGINX_HOST_PORT`, default 8080; container still :80)
 - Apps: `catalog`, `sources`, `trends`
 - Demo seed + mobile UI Passé / Maintenant / Futur
+- Article **detail** page (images, description, where to find, linked sources, 3-horizon scores)
 - Celery wired (heartbeat only)
 
 ### Out of scope

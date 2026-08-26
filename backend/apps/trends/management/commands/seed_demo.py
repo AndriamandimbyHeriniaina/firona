@@ -2,6 +2,7 @@
 
 Example:
     python manage.py seed_demo
+    python manage.py seed_demo --force
 """
 
 from datetime import timedelta
@@ -21,12 +22,106 @@ CATEGORIES = (
 )
 
 PRODUCTS = (
-    ("riz", "Riz", "alimentation", ["vary", "riz local"], 78, 70, 4.0, 74, 40),
-    ("huile", "Huile de cuisine", "alimentation", ["menaka", "huile"], 66, 80, -3.0, 62, 28),
-    ("groupe-electrogene", "Groupe électrogène", "energie", ["groupe", "Jirama"], 71, 45, 14.0, 48, 82),
-    ("powerbank", "Powerbank", "telecom", ["batterie externe"], 58, 52, 9.0, 40, 75),
-    ("telephone", "Téléphone", "telecom", ["findy", "smartphone", "capteur"], 84, 77, 6.0, 80, 55),
-    ("lamba", "Lamba / vêtements", "mode", ["lamba", "haody"], 49, 60, -6.0, 54, 22),
+    {
+        "slug": "riz",
+        "name": "Riz",
+        "category": "alimentation",
+        "aliases": ["vary", "riz local"],
+        "scores": (78, 70, 4.0, 74, 40),
+        "image_url": "/articles/riz.svg",
+        "gallery": ["/articles/riz.svg", "/articles/riz-marche.svg"],
+        "description": (
+            "Aliment de base à Madagascar. Le radar suit surtout le riz local "
+            "(vary gasy) et le riz importé quand les stocks se tendent."
+        ),
+        "where_to_find": (
+            "Marchés d'Analakely et d'Anosibe à Tana, zoma des bassins rizicoles "
+            "(Alaotra, Marovoay), épiceries de quartier et sacs de 50 kg chez les collecteurs."
+        ),
+    },
+    {
+        "slug": "huile",
+        "name": "Huile de cuisine",
+        "category": "alimentation",
+        "aliases": ["menaka", "huile"],
+        "scores": (66, 80, -3.0, 62, 28),
+        "image_url": "/articles/huile.svg",
+        "gallery": ["/articles/huile.svg"],
+        "description": (
+            "Huile de table (souvent importée). Les hausses suivent le change, "
+            "le fret et les ruptures en grande surface."
+        ),
+        "where_to_find": (
+            "Supermarchés (Score, Shoprite), épiceries, marchés d'Isotry et d'Andravoahangy. "
+            "Les bidons de 5–20 L passent aussi par les grossistes."
+        ),
+    },
+    {
+        "slug": "groupe-electrogene",
+        "name": "Groupe électrogène",
+        "category": "energie",
+        "aliases": ["groupe", "Jirama"],
+        "scores": (71, 45, 14.0, 48, 82),
+        "image_url": "/articles/groupe.svg",
+        "gallery": ["/articles/groupe.svg"],
+        "description": (
+            "Demande très liée aux délestages Jirama et aux cyclones. "
+            "Signal d'achat fort en saison des pluies et après les coupures longues."
+        ),
+        "where_to_find": (
+            "Magasins d'électroménager à Tana (Behoririka, Ankorondrano), "
+            "importateurs, et petites annonces consenties (pages boutiques)."
+        ),
+    },
+    {
+        "slug": "powerbank",
+        "name": "Powerbank",
+        "category": "telecom",
+        "aliases": ["batterie externe"],
+        "scores": (58, 52, 9.0, 40, 75),
+        "image_url": "/articles/powerbank.svg",
+        "gallery": ["/articles/powerbank.svg"],
+        "description": (
+            "Batterie externe pour téléphone. Monte avec les coupures et chez les étudiants / livreurs."
+        ),
+        "where_to_find": (
+            "Boutiques télécom d'Analakely et de Soarano, kiosques GSM, "
+            "pages Facebook de boutiques partenaires."
+        ),
+    },
+    {
+        "slug": "telephone",
+        "name": "Téléphone",
+        "category": "telecom",
+        "aliases": ["findy", "smartphone", "capteur"],
+        "scores": (84, 77, 6.0, 80, 55),
+        "image_url": "/articles/telephone.svg",
+        "gallery": ["/articles/telephone.svg", "/articles/telephone-shop.svg"],
+        "description": (
+            "Smartphones neufs et reconditionnés. Les Malgaches cherchent souvent "
+            "par « findy » ou le modèle (Tecno, Infinix, Samsung, iPhone)."
+        ),
+        "where_to_find": (
+            "Rues GSM d'Analakely et de Soarano, boutiques capteurs, "
+            "marketplaces locales (Zoma, etc.) et pages partenaires."
+        ),
+    },
+    {
+        "slug": "lamba",
+        "name": "Lamba / vêtements",
+        "category": "mode",
+        "aliases": ["lamba", "haody"],
+        "scores": (49, 60, -6.0, 54, 22),
+        "image_url": "/articles/lamba.svg",
+        "gallery": ["/articles/lamba.svg"],
+        "description": (
+            "Lamba, haody et friperie. Le rythme suit les fêtes, la rentrée et les zoma régionaux."
+        ),
+        "where_to_find": (
+            "Marché d'Andravoahangy, Digue, zoma de Tsiroanomandidy et Antsirabe, "
+            "couturières de quartier."
+        ),
+    },
 )
 
 SOURCES = (
@@ -46,27 +141,47 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if Product.objects.exists() and not options["force"]:
-            self.stdout.write("Demo data already present. Use --force to reseed.")
-            return
-
         categories = {}
         for slug, name in CATEGORIES:
             category, _ = Category.objects.get_or_create(slug=slug, defaults={"name": name})
             categories[slug] = category
 
-        now = timezone.now().replace(minute=0, second=0, microsecond=0)
-
-        for slug, name, category_slug, aliases, demand, supply, momentum, seasonal, emerging in PRODUCTS:
-            product, _ = Product.objects.update_or_create(
-                slug=slug,
+        source_objs = []
+        for name, kind, external_id, consent in SOURCES:
+            source, _ = Source.objects.update_or_create(
+                kind=kind,
+                external_id=external_id,
                 defaults={
                     "name": name,
-                    "category": categories[category_slug],
-                    "aliases": aliases,
+                    "is_active": True,
+                    "consent_granted": consent,
+                },
+            )
+            source_objs.append(source)
+
+        now = timezone.now().replace(minute=0, second=0, microsecond=0)
+
+        for item in PRODUCTS:
+            demand, supply, momentum, seasonal, emerging = item["scores"]
+            product, _ = Product.objects.update_or_create(
+                slug=item["slug"],
+                defaults={
+                    "name": item["name"],
+                    "category": categories[item["category"]],
+                    "aliases": item["aliases"],
+                    "description": item["description"],
+                    "image_url": item["image_url"],
+                    "gallery": item["gallery"],
+                    "where_to_find": item["where_to_find"],
                     "is_active": True,
                 },
             )
+            product.sources.set(source_objs)
+
+            has_history = product.snapshots.exists()
+            if has_history and not options["force"]:
+                continue
+
             TrendSnapshot.objects.filter(product=product).delete()
             for days_ago in range(14, -1, -1):
                 captured = now - timedelta(days=days_ago)
@@ -81,16 +196,5 @@ class Command(BaseCommand):
                     seasonal_baseline=seasonal,
                     emerging_score=emerging,
                 )
-
-        for name, kind, external_id, consent in SOURCES:
-            Source.objects.update_or_create(
-                kind=kind,
-                external_id=external_id,
-                defaults={
-                    "name": name,
-                    "is_active": True,
-                    "consent_granted": consent,
-                },
-            )
 
         self.stdout.write(self.style.SUCCESS("Demo radar data is ready."))

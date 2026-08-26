@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
+  <rect width="640" height="400" rx="24" fill="#1b3328"/>
+  <ellipse cx="320" cy="280" rx="180" ry="40" fill="#0f1c17"/>
+  <rect x="250" y="90" width="140" height="180" rx="16" fill="#e8c547"/>
+  <rect x="262" y="102" width="116" height="156" rx="10" fill="#c9a227"/>
+  <circle cx="300" cy="160" r="14" fill="#f4efe6"/>
+  <circle cx="340" cy="190" r="12" fill="#f4efe6"/>
+  <circle cx="318" cy="220" r="10" fill="#f4efe6"/>
+  <text x="320" y="360" text-anchor="middle" fill="#b7c4bb" font-size="22" font-family="system-ui">Riz / vary</text>
+</svg>

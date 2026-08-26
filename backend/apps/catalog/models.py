@@ -40,6 +40,30 @@ class Product(models.Model):
         blank=True,
         help_text='Search variants, e.g. ["findy", "smartphone"].',
     )
+    description = models.TextField(
+        blank=True,
+        help_text="Short article blurb shown on the detail screen.",
+    )
+    image_url = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text='Hero image path, e.g. "/articles/riz.svg".',
+    )
+    gallery = models.JSONField(
+        default=list,
+        blank=True,
+        help_text='Extra image paths, e.g. ["/articles/riz-marche.svg"].',
+    )
+    where_to_find = models.TextField(
+        blank=True,
+        help_text="Where buyers typically find the article in Madagascar.",
+    )
+    sources = models.ManyToManyField(
+        "sources.Source",
+        blank=True,
+        related_name="products",
+        help_text="Legal data sources that feed this article's radar.",
+    )
     is_active = models.BooleanField(default=True)
 
     class Meta:

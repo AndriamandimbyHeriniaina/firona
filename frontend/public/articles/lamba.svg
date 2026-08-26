@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
+  <rect width="640" height="400" rx="24" fill="#1b3328"/>
+  <path d="M160 280 L320 80 L480 280 Z" fill="#e23d28"/>
+  <path d="M200 280 L320 120 L440 280 Z" fill="#e8c547"/>
+  <path d="M240 280 L320 160 L400 280 Z" fill="#3cb371"/>
+  <text x="320" y="360" text-anchor="middle" fill="#b7c4bb" font-size="22" font-family="system-ui">Lamba</text>
+</svg>

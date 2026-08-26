@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
+  <rect width="640" height="400" rx="24" fill="#1b3328"/>
+  <rect x="250" y="50" width="140" height="280" rx="28" fill="#0f1c17"/>
+  <rect x="262" y="78" width="116" height="200" rx="12" fill="#3cb371"/>
+  <circle cx="320" cy="300" r="10" fill="#e8c547"/>
+  <text x="320" y="360" text-anchor="middle" fill="#b7c4bb" font-size="22" font-family="system-ui">Findy</text>
+</svg>

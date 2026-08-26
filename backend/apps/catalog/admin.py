@@ -15,3 +15,16 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ("category", "is_active")
     search_fields = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
+    filter_horizontal = ("sources",)
+    fields = (
+        "name",
+        "slug",
+        "category",
+        "aliases",
+        "description",
+        "image_url",
+        "gallery",
+        "where_to_find",
+        "sources",
+        "is_active",
+    )

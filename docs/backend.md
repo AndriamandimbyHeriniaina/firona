@@ -6,7 +6,7 @@ Project: `backend/` (`config/` + apps). DRF. Timezone `Indian/Antananarivo`.
 
 | App | Models | Role |
 | --- | --- | --- |
-| `catalog` | `Category`, `Product` | Articles + aliases (`findy`, `vary`) |
+| `catalog` | `Category`, `Product` | Articles, aliases, images, where-to-find, linked `Source`s |
 | `sources` | `Source` | Legal sources only; `consent_granted` required for FB |
 | `trends` | `TrendSnapshot` | Scores for now / past / future |
 
@@ -16,6 +16,7 @@ Project: `backend/` (`config/` + apps). DRF. Timezone `Indian/Antananarivo`.
 | --- | --- |
 | GET | `/api/health/` |
 | GET | `/api/v1/products/` |
+| GET | `/api/v1/products/<slug>/` |
 | GET | `/api/v1/radar/?horizon=now\|past\|future` |
 | — | `/admin/` |
 

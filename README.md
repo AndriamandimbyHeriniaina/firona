@@ -35,11 +35,19 @@ docker compose up --build
 | http://localhost:8080 | Vue PWA (Passé / Maintenant / Futur) |
 | http://localhost:8080/api/health/ | Backend liveness |
 | http://localhost:8080/api/v1/radar/?horizon=now | Radar JSON (`now` \| `past` \| `future`) |
+| http://localhost:8080/api/v1/products/telephone/ | Article detail JSON |
 | http://localhost:8080/admin/ | Django admin |
 
 The browser never talks to Vite or Django directly. Nginx routes `/` to the frontend and `/api`, `/admin`, `/static` to Django. Same layout in production (replace the Vite upstream with the built `dist`).
 
-First boot runs migrations and `seed_demo` (sample products: rice, phones, generators, …).
+First boot runs migrations and `seed_demo`. After pulling model changes:
+
+```bash
+docker compose exec backend python manage.py migrate --noinput
+docker compose exec backend python manage.py seed_demo
+```
+
+Tap an article on the radar to open its detail (images, where to find, sources).
 
 ```bash
 docker compose exec backend python manage.py seed_demo --force

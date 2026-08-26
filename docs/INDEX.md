@@ -5,7 +5,7 @@ Read this file first, then **only** the docs for the area you are changing.
 | Field | Value |
 | --- | --- |
 | Current version | **v1 — Initialization** |
-| Status | Scaffold + nginx gateway. Collectors not implemented. |
+| Status | Scaffold + nginx gateway + article detail. Collectors not implemented. |
 | Last updated | 2026-08-26 |
 
 ## Docs by function
