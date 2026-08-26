@@ -1,0 +1,197 @@
+:root {
+  color-scheme: dark;
+  --bg: #12241c;
+  --bg-2: #1b3328;
+  --ink: #f4efe6;
+  --muted: #b7c4bb;
+  --red: #e23d28;
+  --green: #3cb371;
+  --gold: #e8c547;
+  --line: rgba(244, 239, 230, 0.12);
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+  margin: 0;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(60, 179, 113, 0.18), transparent 42%),
+    var(--bg);
+  color: var(--ink);
+}
+
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+
+.shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.top {
+  padding: 1.4rem 1.2rem 0.4rem;
+}
+
+.eyebrow {
+  margin: 0;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--gold);
+}
+
+h1 {
+  margin: 0.25rem 0;
+  font-size: 2rem;
+  font-weight: 650;
+}
+
+.lede {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.content {
+  padding: 0.8rem 1rem 6.5rem;
+}
+
+.status {
+  color: var(--muted);
+}
+
+.status.error {
+  color: var(--red);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.card h2 {
+  margin: 0.35rem 0 0.8rem;
+  font-size: 1.2rem;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cat {
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pill {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(232, 197, 71, 0.15);
+  color: var(--gold);
+}
+
+.pill[data-label="rising"],
+.pill[data-label="emerging"] {
+  background: rgba(60, 179, 113, 0.18);
+  color: var(--green);
+}
+
+.pill[data-label="falling"] {
+  background: rgba(226, 61, 40, 0.16);
+  color: #ff8d82;
+}
+
+.bar {
+  height: 0.45rem;
+  background: rgba(244, 239, 230, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  width: calc(var(--score) * 1%);
+  background: linear-gradient(90deg, var(--green), var(--gold));
+}
+
+.card dl {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin: 0.85rem 0 0;
+}
+
+.card dt {
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.card dd {
+  margin: 0.15rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.dock {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 0.4rem;
+  padding: 0.7rem 0.9rem calc(0.7rem + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--bg) 86%, black);
+  border-top: 1px solid var(--line);
+}
+
+.dock a {
+  text-align: center;
+  text-decoration: none;
+  color: var(--muted);
+  padding: 0.7rem 0.4rem;
+  border-radius: 0.9rem;
+  font-weight: 600;
+}
+
+.dock a.router-link-active {
+  color: var(--ink);
+  background: var(--bg-2);
+}
+
+.dock a.now.router-link-active {
+  background: var(--red);
+  color: white;
+}
+
+@media (min-width: 720px) {
+  .shell {
+    padding-top: 1rem;
+  }
+}

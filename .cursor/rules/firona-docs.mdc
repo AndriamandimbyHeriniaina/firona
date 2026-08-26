@@ -1,0 +1,14 @@
+---
+description: Always load Firona README and living DOC before working; update them after shipping.
+alwaysApply: true
+---
+
+# Firona project docs
+
+Before any task in this repo, read `README.md` and `DOC.md`.
+
+- Follow the **Current version** in `DOC.md`. Do not skip ahead unless the user asks.
+- After you ship something, update `DOC.md` (status, decisions, follow-ups, date). If setup or commands changed, update `README.md` too.
+- No Facebook scraping. Sources must match `DOC.md`.
+- User-facing copy: French. Code comments / README / DOC: English.
+- Answers to the user: French.
