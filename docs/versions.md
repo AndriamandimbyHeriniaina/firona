@@ -5,7 +5,7 @@ Source of truth for **what shipped** and **what is next**. Do not delete past ve
 | Field | Value |
 | --- | --- |
 | Current version | **v2 — Legal source strategy** |
-| Last updated | 2026-08-26 |
+| Last updated | 2026-08-27 |
 
 ## How to update
 
@@ -25,7 +25,7 @@ Stay on the current version unless the user starts the next one.
 | **v2** | Legal source strategy (no scraping) | **Done** |
 | **v3** | Collectors (Ads Library + Google Trends MG) on Celery | Planned |
 | **v4** | Robustness: retries, idempotency, rate limits, observability | Planned |
-| **v5** | Demand vs supply NLP (Malagasy / French) | Planned |
+| **v5** | Local LLM (Ollama) + demand vs supply NLP | Planned |
 | **v6** | Product UX: history, categories, regions | Planned |
 | **v7** | PWA harden + Capacitor | Planned |
 | **v8** | Partner marketplace search logs | Planned |
@@ -102,6 +102,26 @@ Stay on the current version unless the user starts the next one.
 **Status:** Planned  
 **Goal:** Celery jobs filling `TrendSnapshot` from Ads Library + Google Trends `MG`.
 
+### Planned
+
+- Beat schedule for `meta_ads` and `google_trends` only
+- `assert_can_collect` before any outbound HTTP
+- `mark_success` / `mark_error` on each run
+- Snapshots attached to **existing** `Product` rows (seed / admin catalogue)
+
+### Out of scope
+
+- Local LLM / Ollama (v5)
+- Auto-creating articles from raw ads or queries
+- Facebook page/group fetch even with consent
+- Retries, rate-limit budgets, queue lag on health (v4)
+
+### Decisions
+
+- Collect is a Celery engine, not Django views
+- Raw fetch and later AI organise stay different jobs
+- Demo seed remains until collectors produce real scores
+
 ---
 
 ## v4 — Robustness of services
@@ -109,12 +129,34 @@ Stay on the current version unless the user starts the next one.
 **Status:** Planned  
 **Goal:** Retries, idempotent snapshots, timeouts, queue lag on health, rate-limit budgets.
 
+Collectors stay reliable before we add a model. No LLM in this slice.
+
 ---
 
 ## v5 — Language and demand vs supply
 
 **Status:** Planned  
-**Goal:** « mitady / cherche » vs « amidy / vente » in mixed Malagasy–French.
+**Goal:** Filter and organise collected text: « mitady / cherche » vs « amidy / vente » in mixed Malagasy–French, locally and for free.
+
+### Planned
+
+- Compose service `llm` (Ollama), internal only, volume for models
+- Worker calls `http://llm:11434` — never from Django, never from the browser
+- Default instruct model: `qwen3.5:4b` (Q4). Fallback: `gemma3:4b`
+- Lexicon pass first; LLM only when the text is ambiguous
+- Optional later: embeddings in the same Ollama (`nomic-embed-text`) to group aliases
+
+### Out of scope
+
+- Cloud LLM APIs as the organiser
+- Large GPU-only stacks (vLLM, 70B)
+- Fetching new source kinds (still Ads Library + Trends until a later version)
+
+### Decisions
+
+- Speed is not a goal: CPU batch jobs are enough
+- GPU on WSL is optional
+- A dedicated `docs/llm.md` + skill lands when the Compose service is added
 
 ---
 

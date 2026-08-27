@@ -5,8 +5,8 @@ Read this file first, then **only** the docs for the area you are changing.
 | Field | Value |
 | --- | --- |
 | Current version | **v2 — Legal source strategy** |
-| Status | Source matrix + collect gate. HTTP collectors are v3. |
-| Last updated | 2026-08-26 |
+| Status | v2 done. Next: v3 collectors. Local LLM is v5 ([product.md](product.md), [versions.md](versions.md)). |
+| Last updated | 2026-08-27 |
 
 ## Docs by function
 

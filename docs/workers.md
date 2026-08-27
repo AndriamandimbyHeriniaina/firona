@@ -12,3 +12,5 @@ Broker / results: `REDIS_URL` (see [data.md](data.md)).
 v2: `ping_stack` + `audit_sources` (classifies sources, **no HTTP**). `CELERY_BEAT_SCHEDULE` stays empty until v3 collectors.
 
 Every collector must call `assert_can_collect(source)` first. See [sources.md](sources.md). Revoked consent stops new fetches; snapshots stay.
+
+v3 collectors fetch only. They do not run a model. v5 adds Celery jobs that call a local Ollama service (`llm`) to classify demand vs supply and organise text; see [product.md](product.md) and [versions.md](versions.md). Inference never runs in Django views.
