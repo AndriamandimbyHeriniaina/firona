@@ -15,6 +15,18 @@ Host mapping: `${NGINX_HOST_PORT}:80` (default **8080**). Nginx inside the conta
 
 Django must see the original host: `Host`, `X-Forwarded-Proto`, `X-Forwarded-Host`.
 
+gzip is on for JSON, JS, CSS, SVG and the manifest (metered mobile data). nginx turns the backend's strong ETag into a weak one when it compresses; Django's `If-None-Match` comparison is weak, so 304s still work.
+
+## Recreated backend → 502
+
+Static upstreams keep the backend's **old** container IP if only the backend is recreated. Compose `depends_on.restart: true` restarts nginx when both are part of the same `docker compose up`. After `docker compose up -d --force-recreate backend` (backend alone), run:
+
+```bash
+docker compose restart nginx
+```
+
+The nginx healthcheck turns `unhealthy` in that state.
+
 ## Production swap
 
 Keep `/api` and `/admin`. Replace `/` with:

@@ -15,7 +15,10 @@ Read `docs/backend.md` before editing Django.
 - Keep domain in `apps.catalog`, `apps.sources`, `apps.trends`.
 - Radar: `GET /api/v1/radar/?horizon=now|past|future`.
 - Trust nginx: `USE_X_FORWARDED_HOST`, `CSRF_TRUSTED_ORIGINS`.
-- Seed via `seed_demo`; do not invent live Facebook data in v1.
+- Seed via `seed_demo`. Collectors live in Celery (`collect_now` / beat), not views.
+- Latest scores: order by `trends.services.LATEST_FIRST` (`-day`, `-captured_at`).
+- Health: `/api/health/` (liveness), `/api/health/ready/`, `/api/v1/status/`. Status shows `health`, never error text.
+- Every model change ships its migration (`MigrationDriftTests` fails otherwise).
 
 ## Do not
 

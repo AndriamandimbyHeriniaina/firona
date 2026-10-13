@@ -4,8 +4,8 @@ Source of truth for **what shipped** and **what is next**. Do not delete past ve
 
 | Field | Value |
 | --- | --- |
-| Current version | **v2 — Legal source strategy** |
-| Last updated | 2026-08-27 |
+| Current version | **v4 — Robustness** |
+| Last updated | 2026-10-12 |
 
 ## How to update
 
@@ -23,8 +23,9 @@ Stay on the current version unless the user starts the next one.
 | --- | --- | --- |
 | **v1** | Init: Docker, Django, Vue PWA, nginx gateway, demo radar | **Done** |
 | **v2** | Legal source strategy (no scraping) | **Done** |
-| **v3** | Collectors (Ads Library + Google Trends MG) on Celery | Planned |
-| **v4** | Robustness: retries, idempotency, rate limits, observability | Planned |
+| **v3** | Collectors (Ads Library + Google Trends MG) on Celery | **Done** |
+| **v3.5** | Interface refresh (motion, Android) + v1–v3 audit fixes | **Done** |
+| **v4** | Robustness: retries, idempotency, rate limits, observability | **Done** |
 | **v5** | Local LLM (Ollama) + demand vs supply NLP | Planned |
 | **v6** | Product UX: history, categories, regions | Planned |
 | **v7** | PWA harden + Capacitor | Planned |
@@ -99,15 +100,19 @@ Stay on the current version unless the user starts the next one.
 
 ## v3 — First collectors
 
-**Status:** Planned  
+**Status:** Done  
 **Goal:** Celery jobs filling `TrendSnapshot` from Ads Library + Google Trends `MG`.
 
-### Planned
+### Shipped
 
-- Beat schedule for `meta_ads` and `google_trends` only
-- `assert_can_collect` before any outbound HTTP
-- `mark_success` / `mark_error` on each run
-- Snapshots attached to **existing** `Product` rows (seed / admin catalogue)
+- Beat: `collect_legal_sources` every 6 hours (`apps.trends.tasks.collect_legal_sources`)
+- Manual run: `python manage.py collect_now`
+- `assert_can_collect` inside `gated_request` (no HTTP if denied)
+- geo / `ad_reached_countries` locked to **MG**
+- `CollectedSignal` (public ad ids, trend titles) then scores on **existing** `Product` rows
+- `mark_success` / `mark_error` on each source
+- Missing `META_ADS_ACCESS_TOKEN` or Trends RSS HTTP 400: log, do **not** overwrite demo snapshots
+- Tests: Facebook / inactive / geo≠MG never open a socket
 
 ### Out of scope
 
@@ -121,15 +126,84 @@ Stay on the current version unless the user starts the next one.
 - Collect is a Celery engine, not Django views
 - Raw fetch and later AI organise stay different jobs
 - Demo seed remains until collectors produce real scores
+- Google has **no public daily RSS for `geo=MG`** today (HTTP 400). The collector still calls that official feed only; it does not scrape Trends HTML or fall back to another country
+- Ads Library for MG returns **political / issue ads only** (Meta: commercial archive is EU/UK). Empty commercial hits do not zero-out supply scores
+- Store public ad ids and trend titles, never creative bodies or phones
+
+### Follow-ups
+
+- Official Google Trends API alpha (`trends.googleapis.com`) when a project is allow-listed
+- v4: retries, idempotent daily snapshots, timeouts/budgets as first-class health
+- v5: local LLM on `CollectedSignal` text
+---
+
+## v3.5 — Interface refresh & audit
+
+**Status:** Done (2026-10-12)
+**Goal:** A stylish, animated, Android-first PWA, and a pass over v1–v3 before adding robustness.
+
+Not a roadmap slice of its own: requested between v3 and v4. No v6 features (history screens, category filters, regions) were pulled forward.
+
+### Shipped (UI)
+
+- Design system in `frontend/src/styles.css`: dark + light themes (system setting), one accent per horizon (Passé gold, Maintenant red, Futur cyan), Plus Jakarta Sans (self-hosted, latin subset precached)
+- Animated radar (`RadarScope.vue`): rotating sweep, blips pulse when the beam passes, fixed bearing per article, tap to open
+- Cards with score ring, demand/supply bars, momentum; detail screen with 3-horizon rings, demand-vs-supply verdict, interactive history chart (finger scrub), sources with collect health, native share
+- View Transitions (Chrome / Android WebView 111+): thumbnail → hero morph, directional slides between horizons, nav bar slides away on articles
+- Touch: swipe between horizons, pull-to-refresh, ripples, haptic ticks, 44–48 px targets, safe areas
+- Speed: stale-while-revalidate store (instant tab switches), other horizons prefetched, lazy detail chunk, skeletons, `lite` mode on ≤ 2 GB RAM / Data Saver (no blur, no glow), `prefers-reduced-motion` honoured
+- PWA: PNG icons (192/512/maskable), Android shortcuts (long-press), offline API cache (NetworkFirst, 5 s timeout), install button, offline banner
+- New article illustrations (valid UTF-8 SVG, no baked-in text)
+
+### Audit fixes (v1–v3)
+
+| Version | Problem | Fix |
+| --- | --- | --- |
+| v1 | Article history returned the 15 **oldest** snapshots | Latest 15 days, oldest → newest |
+| v1 | Detail rebuilt the whole radar 3× to find one article | `product_radar()` (one query) |
+| v1 | Demo seed drew falling curves for positive momentum | Demand climbs to today's value |
+| v1 | `groupe.svg` / `riz-marche.svg` were Latin-1 (broken image) | Redrawn as UTF-8 |
+| v1 | Prod frontend image had no SPA fallback (deep links 404) | `frontend/nginx/spa.conf` |
+| v1 | nginx kept a dead backend IP after the backend container was recreated (502) | Compose `depends_on.restart: true` |
+| v3 | Migrations had drifted from models (index names, help_text) | Migrations fixed + drift test |
+| v3 | Substring matching (`riz` in `prize`), no accent folding | Whole words, accent-insensitive, longest term wins |
+| v3 | `refresh_radar_snapshots` never matched a signal (exact timestamp) | Works per local day |
+| v3 | `httpx` logged the Ads token (query string) at INFO | `httpx` → WARNING + redaction everywhere |
+| v3 | Worker image lacked `httpx` (installed by hand in the old container) | Images rebuilt from `requirements.txt` |
 
 ---
 
 ## v4 — Robustness of services
 
-**Status:** Planned  
+**Status:** Done (2026-10-12)
 **Goal:** Retries, idempotent snapshots, timeouts, queue lag on health, rate-limit budgets.
 
 Collectors stay reliable before we add a model. No LLM in this slice.
+
+### Shipped
+
+- **Idempotent days:** `TrendSnapshot` and `CollectedSignal` carry `day` (local date, Antananarivo) with unique keys. Re-running a collector updates today's rows; momentum compares with the previous **day**, not the previous run
+- **HTTP:** pooled client per run, split timeouts, 3 attempts with exponential backoff + full jitter on timeouts / 429 / 5xx, `Retry-After` honoured (≤ 60 s), 4xx not retried
+- **Legal gate on every attempt:** consent revoked or source disabled between two attempts stops the next request
+- **Budgets:** hourly request budget per source kind in the cache (`COLLECT_BUDGET_*`), checked before the socket opens
+- **Celery:** single-flight lock (beat, manual `collect_now`, retries never overlap), soft/hard time limits, auto-retry on DB blips, `acks_late`, prefetch 1, beat entries expire instead of piling up
+- **Observability:** `CollectionRun` log per collector × source (requests, retries, signals, duration, redacted detail) in the admin; `Source.health` / `consecutive_failures`; worker heartbeat every 5 min; `/api/health/ready/`; `/api/v1/status/` (`ok` / `degraded` / `down`: worker, queue backlog, data freshness, failing sources); worker Docker healthcheck
+- **API:** ETag + `must-revalidate` (304 on unchanged radar), nginx gzip
+- 50 backend tests (was 14), including a migration drift guard
+- Independent review pass fixed: soft time limit no longer swallowed, gate re-read before every request (not only retries), log redaction filter + no redirects with the token, HTTP-date `Retry-After`, race-safe upserts, body timeout and pull-to-refresh error toast in the PWA, Chrome < 111 colour support (no `color-mix()`), per-navigation view-transition hand-off
+
+### Decisions
+
+- Meta token stays in the query string (the officially documented form); it is kept out of logs and stored errors instead of moving to a header we could not verify against Meta's docs
+- Public status shows health, never error text (error text stays in the admin)
+- Ads value = distinct public ad ids seen that day (union across runs)
+- nginx keeps static upstreams (no `resolver`, see nginx.md); Compose restarts it with the backend
+
+### Follow-ups
+
+- v5: local LLM on `CollectedSignal` titles
+- Alerting on `/api/v1/status/` (an external uptime monitor is enough)
+- Official Google Trends API alpha when allow-listed (RSS `geo=MG` still returns 400)
 
 ---
 

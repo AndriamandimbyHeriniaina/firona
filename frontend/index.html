@@ -4,13 +4,28 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
     />
-    <meta name="theme-color" content="#12241c" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#07130e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f1e8" media="(prefers-color-scheme: light)" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Firona" />
+    <meta
+      name="description"
+      content="Radar des articles en tendance sur le marché malgache : maintenant, passé et futur."
+    />
+    <meta name="format-detection" content="telephone=no" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Firona — radar marché malgache</title>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Firona — radar du marché malgache</title>
+    <style>
+      /* First paint before the CSS bundle: no white flash on Android. */
+      html { background: #07130e; }
+      @media (prefers-color-scheme: light) { html { background: #f4f1e8; } }
+    </style>
   </head>
   <body>
     <div id="app"></div>

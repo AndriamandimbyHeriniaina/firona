@@ -12,3 +12,4 @@ Read `docs/frontend.md`. Use skill `firona-frontend`.
 - Do not add a Vite proxy to Django; nginx is the gateway.
 - Behind Compose, HMR must use `HMR_CLIENT_PORT` (public nginx port).
 - UI strings in French.
+- Tokens + motion rules in `docs/frontend.md` (transform/opacity only, reduced motion, lite mode).

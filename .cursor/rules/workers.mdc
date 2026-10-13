@@ -10,4 +10,4 @@ Read `docs/workers.md`. Use skill `firona-workers`.
 
 - `celery -A config` for worker and beat. Broker is Redis.
 - No Facebook scraping. `assert_can_collect` before HTTP (`docs/sources.md`).
-- v2: `audit_sources` only; HTTP collectors in v3.
+- HTTP collectors since v3; v4 adds retries, budgets, a lock, daily upserts and `CollectionRun` (see `docs/workers.md`).

@@ -1,9 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
-  <rect width="640" height="400" rx="24" fill="#24382c"/>
-  <rect x="80" y="220" width="480" height="90" rx="12" fill="#3cb371"/>
-  <circle cx="160" cy="200" r="28" fill="#e8c547"/>
-  <circle cx="240" cy="188" r="22" fill="#e8c547"/>
-  <circle cx="320" cy="196" r="26" fill="#e8c547"/>
-  <path d="M80 220h480" stroke="#12241c" stroke-width="6"/>
-  <text x="320" y="360" text-anchor="middle" fill="#b7c4bb" font-size="22" font-family="system-ui">Marché / zoma</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#143a2b"/>
+      <stop offset="1" stop-color="#091c14"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.5">
+      <stop offset="0" stop-color="#ff5a43" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#ff5a43" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.3" fill="#ffffff" fill-opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#bg)"/>
+  <rect width="640" height="400" fill="url(#dots)"/>
+  <ellipse cx="320" cy="200" rx="300" ry="220" fill="url(#glow)"/>
+  <ellipse cx="320" cy="330" rx="170" ry="18" fill="#000000" fill-opacity="0.3"/>
+  <defs>
+    <linearGradient id="basket" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9a44a"/>
+      <stop offset="1" stop-color="#9a6a24"/>
+    </linearGradient>
+    <clipPath id="b1"><path d="M178 262 h104 l-12 58 h-80 z"/></clipPath>
+    <clipPath id="b2"><path d="M300 254 h120 l-14 66 h-92 z"/></clipPath>
+    <clipPath id="b3"><path d="M438 266 h96 l-11 54 h-74 z"/></clipPath>
+  </defs>
+  <rect x="150" y="92" width="10" height="236" rx="4" fill="#5b4126"/>
+  <rect x="560" y="92" width="10" height="236" rx="4" fill="#5b4126"/>
+  <path d="M130 70 H590 L574 112 H146 Z" fill="#f2eee5"/>
+  <g fill="#ff5a43">
+    <path d="M176 70 h44 l-6 42 h-44 z"/><path d="M264 70 h44 l-4 42 h-44 z"/>
+    <path d="M352 70 h44 l-2 42 h-44 z"/><path d="M440 70 h44 l0 42 h-44 z"/>
+    <path d="M528 70 h44 l2 42 h-36 z"/>
+  </g>
+  <path d="M146 112 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 q18 22 36 0 V112 Z" fill="#f2eee5"/>
+  <rect x="150" y="318" width="420" height="14" rx="5" fill="#6b4a2a"/>
+  <g>
+    <path d="M178 262 h104 l-12 58 h-80 z" fill="url(#basket)"/>
+    <g clip-path="url(#b1)" stroke="#7a5018" stroke-width="2" opacity="0.6">
+      <path d="M170 276 h120 M170 290 h120 M170 304 h120"/>
+    </g>
+    <path d="M178 262 q52 -44 104 0 z" fill="#fffaf0"/>
+  </g>
+  <g>
+    <path d="M300 254 h120 l-14 66 h-92 z" fill="url(#basket)"/>
+    <g clip-path="url(#b2)" stroke="#7a5018" stroke-width="2" opacity="0.6">
+      <path d="M290 270 h140 M290 286 h140 M290 302 h140"/>
+    </g>
+    <path d="M300 254 q60 -56 120 0 z" fill="#f1e2b8"/>
+  </g>
+  <g>
+    <path d="M438 266 h96 l-11 54 h-74 z" fill="url(#basket)"/>
+    <g clip-path="url(#b3)" stroke="#7a5018" stroke-width="2" opacity="0.6">
+      <path d="M430 280 h110 M430 294 h110 M430 308 h110"/>
+    </g>
+    <path d="M438 266 q48 -40 96 0 z" fill="#e9b65c"/>
+  </g>
+  <circle cx="232" cy="236" r="4" fill="#fffaf0" opacity="0.8"/>
+  <circle cx="360" cy="214" r="4" fill="#fffaf0" opacity="0.8"/>
 </svg>

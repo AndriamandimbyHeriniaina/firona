@@ -37,7 +37,13 @@ class Source(models.Model):
         help_text="When set, collectors must stop. Historical snapshots are kept.",
     )
     last_success_at = models.DateTimeField(null=True, blank=True)
+    last_attempt_at = models.DateTimeField(null=True, blank=True)
+    last_error_at = models.DateTimeField(null=True, blank=True)
     last_error = models.TextField(blank=True)
+    consecutive_failures = models.PositiveIntegerField(
+        default=0,
+        help_text="Failed collect runs in a row; reset by the next success.",
+    )
     notes = models.TextField(
         blank=True,
         help_text="Partner outreach, admin name, contract reference — not user PII from posts.",
@@ -90,11 +96,51 @@ class Source(models.Model):
             update_fields=["consent_granted", "consent_revoked_at", "is_active"]
         )
 
+    @property
+    def health(self) -> str:
+        """Public collect state: ok | error | never | blocked (no error text leaks).
+
+        Example:
+            source.health  # "error" after a failed run, "ok" after the next success
+        """
+        if not self.can_collect:
+            return "blocked"
+        if self.last_success_at is None and self.last_error_at is None:
+            return "never"
+        if self.last_error_at and (
+            self.last_success_at is None or self.last_error_at > self.last_success_at
+        ):
+            return "error"
+        return "ok"
+
     def mark_success(self) -> None:
-        self.last_success_at = timezone.now()
+        now = timezone.now()
+        self.last_success_at = now
+        self.last_attempt_at = now
         self.last_error = ""
-        self.save(update_fields=["last_success_at", "last_error"])
+        self.consecutive_failures = 0
+        self.save(
+            update_fields=[
+                "last_success_at",
+                "last_attempt_at",
+                "last_error",
+                "consecutive_failures",
+            ]
+        )
 
     def mark_error(self, message: str) -> None:
-        self.last_error = message[:2000]
-        self.save(update_fields=["last_error"])
+        from apps.sources.redact import redact
+
+        now = timezone.now()
+        self.last_error = redact(message)[:2000]
+        self.last_error_at = now
+        self.last_attempt_at = now
+        self.consecutive_failures += 1
+        self.save(
+            update_fields=[
+                "last_error",
+                "last_error_at",
+                "last_attempt_at",
+                "consecutive_failures",
+            ]
+        )

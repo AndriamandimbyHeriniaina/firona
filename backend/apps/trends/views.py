@@ -1,3 +1,4 @@
+from django.utils.cache import patch_cache_control
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -19,4 +20,7 @@ class RadarView(APIView):
         if horizon not in VALID_HORIZONS:
             horizon = "now"
         payload = build_radar(horizon=horizon)
-        return Response(RadarItemSerializer(payload, many=True).data)
+        response = Response(RadarItemSerializer(payload, many=True).data)
+        # Always revalidate; ConditionalGetMiddleware answers 304 when unchanged.
+        patch_cache_control(response, public=True, max_age=0, must_revalidate=True)
+        return response

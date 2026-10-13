@@ -19,7 +19,7 @@ Legal sources → Celery collect (v3) → Postgres raw / snapshots
 | Role | Process | When |
 | --- | --- | --- |
 | Serve the radar | Django `backend` | now |
-| Fetch legal signals | Celery `worker` + `beat` | **v3** |
+| Fetch legal signals | Celery `worker` + `beat` | **v3** (shipped), hardened in **v4** |
 | Filter, classify, organise articles | Celery jobs calling a local LLM container | **v5** |
 
 The article catalogue (`Product`) stays curated until a later slice. Collectors score known articles; they do not scrape a marketplace to invent the catalogue.

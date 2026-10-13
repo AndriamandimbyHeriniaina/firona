@@ -77,6 +77,13 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      # Worker answers a broker round-trip ping (beat freshness is in /api/v1/status/).
+      test: ["CMD-SHELL", "celery -A config inspect ping -d celery@$$HOSTNAME --timeout 10 | grep -q pong"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
 
   beat:
     build:
@@ -119,10 +126,14 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
+      # Upstreams are resolved once at start: restart nginx whenever Compose
+      # recreates backend/frontend (new container IP), or it answers 502.
       backend:
         condition: service_healthy
+        restart: true
       frontend:
         condition: service_started
+        restart: true
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/api/health/"]
       interval: 10s

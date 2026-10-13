@@ -4,9 +4,9 @@ Read this file first, then **only** the docs for the area you are changing.
 
 | Field | Value |
 | --- | --- |
-| Current version | **v2 — Legal source strategy** |
-| Status | v2 done. Next: v3 collectors. Local LLM is v5 ([product.md](product.md), [versions.md](versions.md)). |
-| Last updated | 2026-08-27 |
+| Current version | **v4 — Robustness** |
+| Status | Collectors are idempotent per day, retried, budgeted and observable (`/api/v1/status/`). New Android-first UI (v3.5). Local LLM is v5. |
+| Last updated | 2026-10-12 |
 
 ## Docs by function
 

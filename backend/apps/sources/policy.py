@@ -27,6 +27,10 @@ COLLECTABLE_KINDS = frozenset(
     }
 )
 
+# Collectors must not query another country, even if Source.external_id is wrong.
+TRENDS_GEO = "MG"
+ADS_REACHED_COUNTRY = "MG"
+
 CONSENT_REQUIRED_KINDS = frozenset(
     {
         Source.Kind.FACEBOOK_PAGE,

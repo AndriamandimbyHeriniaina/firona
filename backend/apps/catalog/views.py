@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.utils.cache import patch_cache_control
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -31,4 +32,7 @@ class ProductDetailView(APIView):
             payload = build_product_detail(slug)
         except Product.DoesNotExist as exc:
             raise Http404("Unknown article") from exc
-        return Response(payload)
+        response = Response(payload)
+        # Always revalidate; ConditionalGetMiddleware answers 304 when unchanged.
+        patch_cache_control(response, public=True, max_age=0, must_revalidate=True)
+        return response

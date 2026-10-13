@@ -1,37 +1,48 @@
 import { createRouter, createWebHistory } from "vue-router";
+import type { Horizon } from "./api";
 import RadarView from "./views/RadarView.vue";
-import ProductDetailView from "./views/ProductDetailView.vue";
+
+declare module "vue-router" {
+  interface RouteMeta {
+    /** Horizon position on screen (0 = Passé, 1 = Maintenant, 2 = Futur). */
+    index?: number;
+    horizon?: Horizon;
+    /** Screens stacked above the radar (article detail). */
+    depth?: number;
+  }
+}
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", redirect: "/now" },
     {
-      path: "/now",
-      component: RadarView,
-      props: { horizon: "now" },
-      meta: { title: "Maintenant" },
-    },
-    {
       path: "/past",
       component: RadarView,
       props: { horizon: "past" },
-      meta: { title: "Passé" },
+      meta: { index: 0, horizon: "past" },
+    },
+    {
+      path: "/now",
+      component: RadarView,
+      props: { horizon: "now" },
+      meta: { index: 1, horizon: "now" },
     },
     {
       path: "/future",
       component: RadarView,
       props: { horizon: "future" },
-      meta: { title: "Futur" },
+      meta: { index: 2, horizon: "future" },
     },
     {
       path: "/article/:slug",
-      component: ProductDetailView,
+      component: () => import("./views/ProductDetailView.vue"),
       props: true,
-      meta: { hideDock: true, compactHeader: true },
+      meta: { depth: 1 },
     },
+    { path: "/:pathMatch(.*)*", redirect: "/now" },
   ],
-  scrollBehavior() {
-    return { top: 0 };
+  scrollBehavior(_to, _from, savedPosition) {
+    return savedPosition ?? { top: 0 };
   },
 });

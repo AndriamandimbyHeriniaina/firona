@@ -1,8 +1,11 @@
 """Django settings loaded from environment variables (see docker-compose)."""
 
+import sys
+from datetime import timedelta
 from pathlib import Path
 
 import environ
+from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,6 +50,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    # ETag + 304 on the radar JSON: phones on metered data skip unchanged payloads.
+    "django.middleware.http.ConditionalGetMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -122,9 +127,96 @@ REST_FRAMEWORK = {
     ],
 }
 
-CELERY_BROKER_URL = env("REDIS_URL", default="redis://redis:6379/0")
-CELERY_RESULT_BACKEND = env("REDIS_URL", default="redis://redis:6379/0")
+REDIS_URL = env("REDIS_URL", default="redis://redis:6379/0")
+TESTING = "test" in sys.argv[1:2]
+
+# Cache: collect lock, hourly request budgets, worker heartbeat.
+# Redis DB 1 so it never mixes with the Celery broker (DB 0).
+CACHES = {
+    "default": (
+        {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+        if TESTING
+        else {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": env("REDIS_CACHE_URL", default="redis://redis:6379/1"),
+            "KEY_PREFIX": "firona",
+            "TIMEOUT": 300,
+        }
+    )
+}
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_RESULT_EXPIRES = 24 * 3600
+# A task is acknowledged only once done: a killed worker hands it back to the queue.
+CELERY_TASK_ACKS_LATE = True
+CELERY_TASK_REJECT_ON_WORKER_LOST = True
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BEAT_SCHEDULE = {
-    # Collectors will be registered here once legal data sources are wired.
+    "collect-legal-sources": {
+        "task": "apps.trends.tasks.collect_legal_sources",
+        "schedule": timedelta(hours=6),
+        # If the worker was down, drop the stale run instead of piling them up.
+        "options": {"expires": 3 * 3600},
+    },
+    "worker-heartbeat": {
+        "task": "apps.trends.tasks.heartbeat",
+        "schedule": timedelta(minutes=5),
+        "options": {"expires": 240},
+    },
+    "prune-collection-runs": {
+        "task": "apps.trends.tasks.prune_collection_runs",
+        "schedule": crontab(hour=3, minute=30),
+        "options": {"expires": 6 * 3600},
+    },
+}
+
+# v3 collectors (empty token = skip Ads Library HTTP, mark_error).
+META_ADS_ACCESS_TOKEN = env("META_ADS_ACCESS_TOKEN", default="")
+META_GRAPH_API_VERSION = env("META_GRAPH_API_VERSION", default="v21.0")
+
+# v4 robustness (see docs/workers.md).
+COLLECT_HTTP_TIMEOUT = env.int("COLLECT_HTTP_TIMEOUT", default=20)
+COLLECT_HTTP_ATTEMPTS = env.int("COLLECT_HTTP_ATTEMPTS", default=3)
+COLLECT_RETRY_BASE_S = env.float("COLLECT_RETRY_BASE_S", default=1.0)
+COLLECT_RETRY_CAP_S = env.float("COLLECT_RETRY_CAP_S", default=20.0)
+COLLECT_BUDGET_PER_HOUR = {
+    "meta_ads": env.int("COLLECT_BUDGET_META_ADS", default=150),
+    "google_trends": env.int("COLLECT_BUDGET_GOOGLE_TRENDS", default=20),
+    "default": 60,
+}
+COLLECT_SOFT_TIME_LIMIT = env.int("COLLECT_SOFT_TIME_LIMIT", default=900)
+COLLECT_RUN_RETENTION_DAYS = env.int("COLLECT_RUN_RETENTION_DAYS", default=90)
+# /api/v1/status/ thresholds.
+STATUS_STALE_HOURS = env.int("STATUS_STALE_HOURS", default=13)
+STATUS_HEARTBEAT_MAX_AGE_S = env.int("STATUS_HEARTBEAT_MAX_AGE_S", default=900)
+STATUS_QUEUE_WARN = env.int("STATUS_QUEUE_WARN", default=50)
+
+LOG_LEVEL = env("LOG_LEVEL", default="INFO")
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "plain": {"format": "%(asctime)s %(levelname)s %(name)s %(message)s"},
+    },
+    "filters": {
+        # Last line of defence: no token / bearer / secret reaches stdout.
+        "redact": {"()": "apps.sources.redact.RedactingFilter"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "plain",
+            "filters": ["redact"],
+        },
+    },
+    "root": {"handlers": ["console"], "level": LOG_LEVEL},
+    "loggers": {
+        # httpx logs full request URLs at INFO, query-string tokens included.
+        "httpx": {"level": "WARNING"},
+        "httpcore": {"level": "WARNING"},
+        "django.db.backends": {"level": "WARNING"},
+    },
 }

@@ -137,7 +137,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--force",
             action="store_true",
-            help="Delete existing demo snapshots and recreate them.",
+            help="Overwrite the last 15 demo days even if snapshots already exist.",
         )
 
     def handle(self, *args, **options):
@@ -160,6 +160,7 @@ class Command(BaseCommand):
             source_objs.append(source)
 
         now = timezone.now().replace(minute=0, second=0, microsecond=0)
+        today = timezone.localdate(now)
 
         for item in PRODUCTS:
             demand, supply, momentum, seasonal, emerging = item["scores"]
@@ -182,19 +183,21 @@ class Command(BaseCommand):
             if has_history and not options["force"]:
                 continue
 
-            TrendSnapshot.objects.filter(product=product).delete()
+            # One row per local day (idempotent). Demand climbs to today's value
+            # when momentum is positive, and slides down to it when negative.
             for days_ago in range(14, -1, -1):
-                captured = now - timedelta(days=days_ago)
-                drift = (14 - days_ago) * (momentum / 14)
-                TrendSnapshot.objects.create(
+                TrendSnapshot.objects.update_or_create(
                     product=product,
-                    captured_at=captured,
                     window=TrendSnapshot.Window.DAY,
-                    demand_score=max(0, min(100, int(demand - drift))),
-                    supply_score=supply,
-                    momentum=momentum,
-                    seasonal_baseline=seasonal,
-                    emerging_score=emerging,
+                    day=today - timedelta(days=days_ago),
+                    defaults={
+                        "captured_at": now - timedelta(days=days_ago),
+                        "demand_score": max(0, min(100, round(demand - days_ago * momentum / 14))),
+                        "supply_score": supply,
+                        "momentum": momentum,
+                        "seasonal_baseline": seasonal,
+                        "emerging_score": emerging,
+                    },
                 )
 
         self.stdout.write(self.style.SUCCESS("Demo radar data is ready."))

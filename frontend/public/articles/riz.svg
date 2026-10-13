@@ -1,10 +1,59 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
-  <rect width="640" height="400" rx="24" fill="#1b3328"/>
-  <ellipse cx="320" cy="280" rx="180" ry="40" fill="#0f1c17"/>
-  <rect x="250" y="90" width="140" height="180" rx="16" fill="#e8c547"/>
-  <rect x="262" y="102" width="116" height="156" rx="10" fill="#c9a227"/>
-  <circle cx="300" cy="160" r="14" fill="#f4efe6"/>
-  <circle cx="340" cy="190" r="12" fill="#f4efe6"/>
-  <circle cx="318" cy="220" r="10" fill="#f4efe6"/>
-  <text x="320" y="360" text-anchor="middle" fill="#b7c4bb" font-size="22" font-family="system-ui">Riz / vary</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#143a2b"/>
+      <stop offset="1" stop-color="#091c14"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.5">
+      <stop offset="0" stop-color="#f5c451" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#f5c451" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.3" fill="#ffffff" fill-opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#bg)"/>
+  <rect width="640" height="400" fill="url(#dots)"/>
+  <ellipse cx="320" cy="200" rx="300" ry="220" fill="url(#glow)"/>
+  <ellipse cx="320" cy="330" rx="170" ry="18" fill="#000000" fill-opacity="0.3"/>
+  <defs>
+    <linearGradient id="sack" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c9a86a"/>
+      <stop offset="0.45" stop-color="#ead2a0"/>
+      <stop offset="1" stop-color="#b8955a"/>
+    </linearGradient>
+    <linearGradient id="can" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8f9a96"/>
+      <stop offset="0.4" stop-color="#e8ece9"/>
+      <stop offset="1" stop-color="#7d8884"/>
+    </linearGradient>
+  </defs>
+  <path d="M226 152 C214 214 210 286 236 318 Q320 340 404 318 C430 286 426 214 414 152 Z" fill="url(#sack)"/>
+  <path d="M236 318 Q320 340 404 318" stroke="#9c7b45" stroke-width="3" opacity="0.6"/>
+  <g stroke="#a88650" stroke-opacity="0.35" stroke-width="2">
+    <path d="M240 190 Q320 202 400 190"/><path d="M236 270 Q320 284 404 270"/>
+  </g>
+  <path d="M232 218 Q320 232 408 218 L410 252 Q320 266 230 252 Z" fill="#ff5a43"/>
+  <path d="M231 252 Q320 266 410 252 L410 260 Q320 274 230 260 Z" fill="#31d683"/>
+  <path d="M226 152 Q320 118 414 152 Q320 176 226 152 Z" fill="#9c7b45"/>
+  <ellipse cx="320" cy="146" rx="84" ry="20" fill="#f7f1e3"/>
+  <path d="M252 146 Q320 104 388 146 Q320 160 252 146 Z" fill="#fffaf0"/>
+  <g fill="#e6dcc6">
+    <ellipse cx="300" cy="138" rx="5" ry="2.4" transform="rotate(-20 300 138)"/>
+    <ellipse cx="330" cy="130" rx="5" ry="2.4" transform="rotate(25 330 130)"/>
+    <ellipse cx="350" cy="142" rx="5" ry="2.4" transform="rotate(-10 350 142)"/>
+    <ellipse cx="282" cy="148" rx="5" ry="2.4" transform="rotate(15 282 148)"/>
+  </g>
+  <g transform="translate(408 250)">
+    <rect x="0" y="12" width="64" height="66" rx="6" fill="url(#can)"/>
+    <rect x="0" y="34" width="64" height="20" fill="#e23d28" opacity="0.9"/>
+    <ellipse cx="32" cy="12" rx="32" ry="9" fill="#cfd6d2"/>
+    <path d="M4 12 Q32 -14 60 12 Q32 20 4 12 Z" fill="#fffaf0"/>
+  </g>
+  <g fill="#fffaf0">
+    <ellipse cx="380" cy="334" rx="5" ry="2.4" transform="rotate(30 380 334)"/>
+    <ellipse cx="396" cy="340" rx="5" ry="2.4" transform="rotate(-25 396 340)"/>
+    <ellipse cx="362" cy="340" rx="5" ry="2.4" transform="rotate(10 362 340)"/>
+    <ellipse cx="490" cy="332" rx="5" ry="2.4" transform="rotate(-15 490 332)"/>
+  </g>
 </svg>
